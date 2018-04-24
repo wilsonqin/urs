@@ -17,7 +17,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/btcsuite/btcec"
+	"github.com/btcsuite/btcd/btcec"
 )
 
 // readLength is the length of a hash compression read in bytes.
