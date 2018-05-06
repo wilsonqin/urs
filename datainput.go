@@ -64,7 +64,7 @@ func ReadKeyRing(filename string, kp *ecdsa.PrivateKey) (*PublicKeyRing, error) 
 
 	err = json.Unmarshal(f, &keyMap)
 	if err != nil {
-		str := fmt.Sprintf("json error: Couldn't unmarshall keyring file.", err)
+		str := fmt.Sprintf("json error: Couldn't unmarshall keyring file: %s", err.Error())
 		jsonError := errors.New(str)
 		return nil, jsonError
 	}
