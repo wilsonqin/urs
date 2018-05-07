@@ -2,7 +2,7 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE file.
 
-package main
+package urs
 
 import (
 	"crypto/ecdsa"
@@ -12,6 +12,7 @@ import (
 	"math/rand"
 	"runtime"
 	"testing"
+	"encoding/json"
 )
 
 const numOfKeys = 1000
@@ -32,6 +33,8 @@ func TestGenerateKey(t *testing.T) {
 		fmt.Println(err.Error())
 		t.FailNow()
 	}
+	result, _ := json.Marshal(testkey)
+	fmt.Println(string(result))
 }
 
 func TestNewPublicKeyRing(t *testing.T) {
