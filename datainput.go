@@ -102,6 +102,38 @@ func ReadKeyRing(filename string, kp *ecdsa.PrivateKey) (*PublicKeyRing, error) 
 	return kr, nil
 }
 
+// ReadKeyRing reads a key ring of public keys from a file in JSON object format,
+// and also inserts the pubkey of a keypair if it's not already present (handles
+// bug in URS implementation).
+func CreateKeyRingAddBulk(filename string, kps []*ecdsa.PrivateKey) (*PublicKeyRing, error) {
+	var keyMap = make(map[string]string)
+
+	kr := NewPublicKeyRing(uint(len(kps)))
+
+	// Stick the pubkeys into the keyring as long as it doesn't belong to the
+	// keypair given.
+	for i, kp := range kps {
+		kr.Add(kp.PublicKey)
+
+		pubkeyBtcec := btcec.PublicKey{kp.PublicKey.Curve,
+			kp.PublicKey.X,
+			kp.PublicKey.Y}
+		keyMap[strconv.Itoa(i)] = hex.EncodeToString(pubkeyBtcec.SerializeCompressed())
+	}
+
+	b, err := json.Marshal(keyMap)
+	if err != nil {
+		return nil, err
+	}
+
+	err = ioutil.WriteFile(filename, b, 0644)
+	if err != nil {
+		return nil, err
+	}
+
+	return kr, nil
+}
+
 // ReadKeyPair reads an ECDSA keypair a file in JSON object format.
 // Example JSON input:
 //  {
